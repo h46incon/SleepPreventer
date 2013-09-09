@@ -71,10 +71,15 @@ namespace SleepPreventer
 
 		protected override void WndProc(ref Message m)
 		{
+			if (ts_setter_ != null && ts_setter_.PreMessageFilter(ref m))
+			{
+                return;
+			}
 			const int WM_SYSCOMMAND = 0x112;
 			//const int SC_CLOSE = 0xF060;
 			const int SC_MINIMIZE = 0xF020;
-			//const int SC_MAXIMIZE = 0xF030;            //if (true && (m.Msg == Win32API.WM_POWERBROADCAST) )
+			//const int SC_MAXIMIZE = 0xF030;
+            //if (true && (m.Msg == Win32API.WM_POWERBROADCAST) )
             //{
             //    MessageBox.Show("Power mode Changed! wndproc");
             //    return;

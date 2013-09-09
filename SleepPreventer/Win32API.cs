@@ -124,8 +124,10 @@ namespace SleepPreventer
 		public delegate uint HandlerEx(
             uint dwControl, uint dwEventType, IntPtr lpEventData, IntPtr lpContext);
         public const uint SERVICE_CONTROL_POWEREVENT = 0x0000000D;
-        public const uint WM_POWERBROADCAST = 0x218;
 
+        public const int WM_POWERBROADCAST = 0x218;
+        public const int WM_QUERYENDSESSION = 0x011;
+		public const int WM_ENDSESSION = 0X0016;
         //http://msdn.microsoft.com/en-us/library/windows/desktop/aa373237(v=vs.85).aspx
 		[DllImport("User32.dll")]
 		public static extern

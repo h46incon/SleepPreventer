@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using Microsoft.Win32;
 
 namespace SleepPreventer
 {
@@ -24,7 +25,6 @@ namespace SleepPreventer
             GetActiveSchemeSetting(out scheme_guid_,ref lid_close_setting_back_);
             IsPrevent = false;
             is_watching_ = false;
-
         }
 
         ~LidCloseAwakeKeeper()
@@ -60,11 +60,21 @@ namespace SleepPreventer
 
         public bool PreFilterMessage(ref Message m)
         {
-			if (is_watching_ && (m.Msg == Win32API.WM_POWERBROADCAST) )
-			{
-                //MessageBox.Show("Power mode Changed! lid code");
-				DoWatchPowerSetting();
-                return true;
+			if (is_watching_ )
+            {
+                switch (m.Msg)
+                {
+					case Win32API.WM_POWERBROADCAST:
+						DoWatchPowerSetting();
+						return true;
+					case Win32API.WM_QUERYENDSESSION:
+                        this.TrySetNeedPrevent(false);
+						return false;
+					//case Win32API.WM_ENDSESSION:
+                    //    return false;
+					default:
+						break;
+                }
             }
             return false;
         }
@@ -127,7 +137,8 @@ namespace SleepPreventer
 					);
                 if (ps_changed_h_ != IntPtr.Zero)
                 {
-					Application.AddMessageFilter(this);
+					// The form must call the message filter 
+					//Application.AddMessageFilter(this);
                 }
 				else
 				{
@@ -153,7 +164,7 @@ namespace SleepPreventer
 			if (ps_changed_h_ != IntPtr.Zero)
 			{
                 result = (Win32API.UnregisterPowerSettingNotification(ps_changed_h_) != 0);
-                Application.RemoveMessageFilter(this);
+                //Application.RemoveMessageFilter(this);
                 //ps_changed_gc_h_.Free();
 			}
             ps_changed_h_ = IntPtr.Zero;
@@ -303,6 +314,11 @@ namespace SleepPreventer
         public uint State
         {
             get { return cur_state_; }
+        }
+
+        public bool PreMessageFilter(ref Message m)
+        {
+            return lc_keeper_.PreFilterMessage(ref m);
         }
 
         public static uint SetBit(uint target, uint source, uint bits)
