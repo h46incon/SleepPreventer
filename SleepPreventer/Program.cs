@@ -17,6 +17,7 @@ namespace SleepPreventer
             Application.SetCompatibleTextRenderingDefault(false);
             //new MyNotifyIcon();
             //Application.Run();
+            LidCloseAwakeKeeper.CheckLogError();
             Application.Run(new Form1());
 			
         }

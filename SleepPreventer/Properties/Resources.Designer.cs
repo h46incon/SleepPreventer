@@ -71,6 +71,15 @@ namespace SleepPreventer.Properties {
         }
         
         /// <summary>
+        ///   查找类似 Config 的本地化字符串。
+        /// </summary>
+        internal static string ConfigFileName {
+            get {
+                return ResourceManager.GetString("ConfigFileName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似于 (Icon) 的 System.Drawing.Icon 类型的本地化资源。
         /// </summary>
         internal static System.Drawing.Icon NoneSleep {

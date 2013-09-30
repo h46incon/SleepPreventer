@@ -5,11 +5,189 @@ using System.Text;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Microsoft.Win32;
+using System.IO;
 
 namespace SleepPreventer
 {
     public class LidCloseAwakeKeeper : ValChangeEvent, IMessageFilter
     {
+        public struct Setting
+        {
+            public bool Equals(Setting v)
+            {
+                // Return true if the fields match:
+                return (v.ACIndex == this.ACIndex) && (v.DCIndex == this.DCIndex);
+            }
+            public uint DCIndex;
+            public uint ACIndex;
+        }
+
+        public static bool GetActiveSchemeSetting(
+			out Guid scheme_guid, ref Setting lid_close_setting)
+        {
+			if ( ! Public.PowerGetActiveSchemeWarp(out scheme_guid) )
+			{
+                return false;
+			}
+            return GetSchemeSetting(scheme_guid, ref lid_close_setting);
+        }
+
+		public static bool GetSchemeSetting(
+            Guid scheme_guid, ref Setting lid_close_setting)
+        {
+            uint index = 0;
+			if( Win32API.PowerReadACValueIndex(
+                        IntPtr.Zero,
+                        ref scheme_guid,
+                        ref Public.GUID_SYSTEM_BUTTON_SUBGROUP,
+                        ref Public.GUID_LIDCLOSE_ACTION,
+                        ref index
+					) != 0)
+            {
+                return false;
+            }
+            lid_close_setting.ACIndex = index;
+
+            if (Win32API.PowerReadDCValueIndex(
+                        IntPtr.Zero,
+                        ref scheme_guid,
+                        ref Public.GUID_SYSTEM_BUTTON_SUBGROUP,
+                        ref Public.GUID_LIDCLOSE_ACTION,
+                        ref index
+                    ) != 0)
+            {
+                return false;
+            }
+            lid_close_setting.DCIndex = index;
+
+            return true;
+
+        }
+
+        public static bool WriteSchemeSetting(
+			Guid scheme_guid, Setting lid_close_setting)
+        {
+			// Write setting			
+			if( Win32API.PowerWriteACValueIndex(
+                        IntPtr.Zero,
+                        ref scheme_guid,
+                        ref Public.GUID_SYSTEM_BUTTON_SUBGROUP,
+                        ref Public.GUID_LIDCLOSE_ACTION,
+                        lid_close_setting.ACIndex
+					) != 0)
+            {
+                return false;
+            }
+
+            if (Win32API.PowerWriteDCValueIndex(
+                        IntPtr.Zero,
+                        ref scheme_guid,
+                        ref Public.GUID_SYSTEM_BUTTON_SUBGROUP,
+                        ref Public.GUID_LIDCLOSE_ACTION,
+                        lid_close_setting.DCIndex
+                    ) != 0)
+            {
+                return false;
+            }
+
+			// Check is it current power scheme
+            Guid cur_scheme;
+			if (Public.PowerGetActiveSchemeWarp(out cur_scheme) )
+			{
+				if (cur_scheme == scheme_guid)
+				{
+                    if (Win32API.PowerSetActiveScheme(
+                        IntPtr.Zero, ref cur_scheme) != 0)
+                    {
+                        return false;
+                    }
+				}
+			}
+
+            return true;
+        }
+
+        public static bool WriteActiveSchemeSetting(Setting lid_close_setting)
+        {
+			Guid scheme_guid;
+            if ( ! Public.PowerGetActiveSchemeWarp(out scheme_guid) )
+			{
+                return false;
+			}
+            return WriteSchemeSetting(scheme_guid, lid_close_setting);
+        }
+
+        public static void CheckLogError()
+        {
+			string fn = SleepPreventer.Properties.Resources.ConfigFileName;
+			if (File.Exists(fn))
+			{
+                using(var fs = File.OpenText(fn))
+                {
+                    string line = fs.ReadLine();
+					if (line == null)
+					{
+						// The file is empty
+                        return;
+					}
+                    string[] s_ary = line.Split(' ');
+                    if (s_ary.Length == 2)
+                    {
+                        Setting back_st;
+                        back_st.ACIndex = uint.Parse(s_ary[0]);
+                        back_st.DCIndex = uint.Parse(s_ary[1]);
+
+						// Get setting name
+                        Dictionary<uint, string> index_name = new Dictionary<uint, string>();
+                        index_name[0] = "不采取任何操作";
+                        index_name[1] = "睡眠";
+                        index_name[2] = "休眠";
+                        index_name[3] = "关机";
+
+						// Get current setting
+						Guid guid;
+                        Setting cur_setting = new Setting();
+                        if (!GetActiveSchemeSetting(out guid, ref cur_setting))
+                        {
+                            return;
+                        }
+						if (cur_setting.Equals(back_st))
+						{
+                            return;
+						}
+
+                        string ac_setting, dc_setting;
+						if (index_name.TryGetValue(back_st.ACIndex, out ac_setting)
+								&& index_name.TryGetValue(back_st.DCIndex, out dc_setting))
+						{
+							if (MessageBox.Show("是否将合上盖子的操作恢复为： " 
+											+ "\n\t"
+											+ "使用电池时："+ ac_setting
+											+ "，"
+											+ "使用外置电源时：" + dc_setting
+											+ "\n"
+											+ "当前的设置为: "
+											+ "\n\t"
+											+ "使用电池时："+ index_name[cur_setting.ACIndex]
+											+ "，"
+											+ "使用外置电源时：" + index_name[cur_setting.DCIndex],
+										"本程序上次意外退出",
+                                        MessageBoxButtons.OKCancel) == DialogResult.OK)
+							{
+                                WriteActiveSchemeSetting(back_st);
+							}
+						}
+                    }
+                }
+				// Clean file
+				using (StreamWriter sw = File.CreateText(
+						SleepPreventer.Properties.Resources.ConfigFileName))
+				{
+					;
+				}
+			}
+        }
+
         public LidCloseAwakeKeeper(IntPtr hWnd = default(IntPtr))
         {
             hWnd_ = hWnd;
@@ -150,6 +328,13 @@ namespace SleepPreventer
 			// Set target setting to system
 			// The sheme_guid_ must be current scheme
 			WriteSchemeSetting(scheme_guid_, target_setting_);
+			// Write backup setting to file 
+            using (StreamWriter sw = File.CreateText(SleepPreventer.Properties.Resources.ConfigFileName))
+            {
+                sw.WriteLine("" + 
+						lid_close_setting_back_.ACIndex + " " 
+                        + lid_close_setting_back_.DCIndex );
+            }
 			is_watching_ = true;
 			return true;
         }
@@ -170,93 +355,15 @@ namespace SleepPreventer
             ps_changed_h_ = IntPtr.Zero;
 			// Restore the backup setting
 			WriteSchemeSetting(scheme_guid_, lid_close_setting_back_);
+			// Clean back file
+            using (StreamWriter sw = File.CreateText(SleepPreventer.Properties.Resources.ConfigFileName))
+            {
+                ;
+            }
             is_watching_ = false;
             return result;
         }
 
-        private static bool GetActiveSchemeSetting(
-			out Guid scheme_guid, ref Setting lid_close_setting)
-        {
-			if ( ! Public.PowerGetActiveSchemeWarp(out scheme_guid) )
-			{
-                return false;
-			}
-            return GetSchemeSetting(scheme_guid, ref lid_close_setting);
-        }
-
-		private static bool GetSchemeSetting(
-            Guid scheme_guid, ref Setting lid_close_setting)
-        {
-            uint index = 0;
-			if( Win32API.PowerReadACValueIndex(
-                        IntPtr.Zero,
-                        ref scheme_guid,
-                        ref Public.GUID_SYSTEM_BUTTON_SUBGROUP,
-                        ref Public.GUID_LIDCLOSE_ACTION,
-                        ref index
-					) != 0)
-            {
-                return false;
-            }
-            lid_close_setting.ACIndex = index;
-
-            if (Win32API.PowerReadDCValueIndex(
-                        IntPtr.Zero,
-                        ref scheme_guid,
-                        ref Public.GUID_SYSTEM_BUTTON_SUBGROUP,
-                        ref Public.GUID_LIDCLOSE_ACTION,
-                        ref index
-                    ) != 0)
-            {
-                return false;
-            }
-            lid_close_setting.DCIndex = index;
-
-            return true;
-
-        }
-        private static bool WriteSchemeSetting(
-			Guid scheme_guid, Setting lid_close_setting)
-        {
-			// Write setting			
-			if( Win32API.PowerWriteACValueIndex(
-                        IntPtr.Zero,
-                        ref scheme_guid,
-                        ref Public.GUID_SYSTEM_BUTTON_SUBGROUP,
-                        ref Public.GUID_LIDCLOSE_ACTION,
-                        lid_close_setting.ACIndex
-					) != 0)
-            {
-                return false;
-            }
-
-            if (Win32API.PowerWriteDCValueIndex(
-                        IntPtr.Zero,
-                        ref scheme_guid,
-                        ref Public.GUID_SYSTEM_BUTTON_SUBGROUP,
-                        ref Public.GUID_LIDCLOSE_ACTION,
-                        lid_close_setting.DCIndex
-                    ) != 0)
-            {
-                return false;
-            }
-
-			// Check is it current power scheme
-            Guid cur_scheme;
-			if (Public.PowerGetActiveSchemeWarp(out cur_scheme) )
-			{
-				if (cur_scheme == scheme_guid)
-				{
-                    if (Win32API.PowerSetActiveScheme(
-                        IntPtr.Zero, ref cur_scheme) != 0)
-                    {
-                        return false;
-                    }
-				}
-			}
-
-            return true;
-        }
 
         private uint SystemPowerSettingChangedHandle(
             uint dwControl, uint dwEventType, IntPtr lpEventData, IntPtr lpContext)
@@ -269,16 +376,7 @@ namespace SleepPreventer
             return 0;
         }
 
-		private struct Setting
-        {
-            public bool Equals(Setting v)
-            {
-                // Return true if the fields match:
-                return (v.ACIndex == this.ACIndex) && (v.DCIndex == this.DCIndex);
-            }
-			public uint DCIndex;
-			public uint ACIndex;
-        }
+		
         private IntPtr hWnd_;
         private IntPtr ps_changed_h_;
         //private GCHandle ps_changed_gc_h_;
