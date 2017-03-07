@@ -10,9 +10,9 @@ using System.Runtime.InteropServices;
 
 namespace SleepPreventer
 {
-    public partial class Form1 : Form
+    public partial class MainForm : Form
     {
-        public Form1()
+        public MainForm()
         {
             InitializeComponent();
 			ts_setter_ =  new TExcState(this.Handle);
@@ -97,7 +97,7 @@ namespace SleepPreventer
 
 		private void button1_Click(object sender, EventArgs e)
 		{
-			AboutBox1 about_box =  new AboutBox1();
+			AboutBox about_box =  new AboutBox();
 			about_box.Show(this);
 		}
 

@@ -8,9 +8,9 @@ using System.Windows.Forms;
 
 namespace SleepPreventer
 {
-    partial class AboutBox1 : Form
+    partial class AboutBox : Form
     {
-        public AboutBox1()
+        public AboutBox()
         {
             InitializeComponent();
             this.Text = String.Format("关于 {0}", AssemblyTitle);

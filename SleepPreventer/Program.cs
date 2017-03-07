@@ -18,7 +18,7 @@ namespace SleepPreventer
             //new MyNotifyIcon();
             //Application.Run();
             LidCloseAwakeKeeper.CheckLogError();
-            Application.Run(new Form1());
+            Application.Run(new MainForm());
 			
         }
     }
