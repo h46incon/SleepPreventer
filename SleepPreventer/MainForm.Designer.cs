@@ -47,7 +47,7 @@ namespace SleepPreventer
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(96, 16);
             this.checkBox1.TabIndex = 0;
-            this.checkBox1.Text = "开启离开模式";
+            this.checkBox1.Text = "PH_AWAY_MODE";
             this.checkBox1.UseVisualStyleBackColor = true;
             // 
             // checkBox2
@@ -55,9 +55,9 @@ namespace SleepPreventer
             this.checkBox2.AutoSize = true;
             this.checkBox2.Location = new System.Drawing.Point(20, 60);
             this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(96, 16);
+            this.checkBox2.Size = new System.Drawing.Size(84, 16);
             this.checkBox2.TabIndex = 0;
-            this.checkBox2.Text = "防止系统休眠";
+            this.checkBox2.Text = "PH_SYS_REQ";
             this.checkBox2.UseVisualStyleBackColor = true;
             // 
             // checkBox3
@@ -67,7 +67,7 @@ namespace SleepPreventer
             this.checkBox3.Name = "checkBox3";
             this.checkBox3.Size = new System.Drawing.Size(108, 16);
             this.checkBox3.TabIndex = 0;
-            this.checkBox3.Text = "防止显示器关闭";
+            this.checkBox3.Text = "PH_DISPLAY_REQ";
             this.checkBox3.UseVisualStyleBackColor = true;
             // 
             // groupBox1
@@ -96,12 +96,12 @@ namespace SleepPreventer
             this.checkBox4.AutoSize = true;
             this.checkBox4.Location = new System.Drawing.Point(44, 103);
             this.checkBox4.Name = "checkBox4";
-            this.checkBox4.Size = new System.Drawing.Size(132, 16);
+            this.checkBox4.Size = new System.Drawing.Size(144, 16);
             this.checkBox4.TabIndex = 4;
-            this.checkBox4.Text = "合上盖子时保持唤醒";
+            this.checkBox4.Text = "PH_AWAY_IN_LID_CLOSE";
             this.checkBox4.UseVisualStyleBackColor = true;
             // 
-            // Form1
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -112,9 +112,9 @@ namespace SleepPreventer
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.Name = "Form1";
+            this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "睡眠阻止者";
+            this.Text = "PH_TITLE";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
