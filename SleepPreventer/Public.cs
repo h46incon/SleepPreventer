@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Reflection;
+using System.Resources;
 
 namespace SleepPreventer
 {
@@ -53,7 +52,7 @@ namespace SleepPreventer
 		/// <summary>
 		///  Global const variable
 		/// </summary>
-        public const string kProgramName = "睡眠终结者";
+        public static string kProgramName;
         public static readonly Dictionary<uint, string> opt_name_dic_;
 
         public static Guid GUID_SYSTEM_BUTTON_SUBGROUP = new Guid("4f971e89-eebd-4455-a8de-9e59040e7347");
@@ -62,11 +61,14 @@ namespace SleepPreventer
 
 		static Public()
         {
-			opt_name_dic_ = new Dictionary<uint, string>();
-			opt_name_dic_[TExcState.AWAY_MODE] = "开启离开模式";
-			opt_name_dic_[TExcState.SYS_REQ] = "防止系统睡眠";
-			opt_name_dic_[TExcState.DISPLAY_REQ] = "防止显示器关闭";
-			opt_name_dic_[TExcState.AWAKE_IN_LID_CLODE] = "合上盖子时保持唤醒";
+            ResourceManager rm = new ResourceManager(typeof(MainForm));
+            kProgramName = rm.GetString("T_Title");
+
+            opt_name_dic_ = new Dictionary<uint, string>();
+			opt_name_dic_[TExcState.AWAY_MODE] = rm.GetString("T_Btn_AwayMode");
+            opt_name_dic_[TExcState.SYS_REQ] = rm.GetString("T_Btn_RequireSystem");
+            opt_name_dic_[TExcState.DISPLAY_REQ] = rm.GetString("T_Btn_RequireDisplay");
+			opt_name_dic_[TExcState.AWAKE_IN_LID_CLODE] = rm.GetString("T_Btn_LidClosedAwake");
         }
     }
 

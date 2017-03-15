@@ -367,7 +367,25 @@
   <data name="checkBox3.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
   </data>
-  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+  <data name="$this.Localizable" type="System.Boolean, mscorlib">
     <value>True</value>
-  </metadata>
+  </data>
+  <data name="T_Btn_AwayMode" xml:space="preserve">
+    <value>Enable away mode</value>
+  </data>
+  <data name="T_Btn_Exit" xml:space="preserve">
+    <value>Exit</value>
+  </data>
+  <data name="T_Btn_LidClosedAwake" xml:space="preserve">
+    <value>Awake when lid closed</value>
+  </data>
+  <data name="T_Btn_RequireDisplay" xml:space="preserve">
+    <value>Monitor awake</value>
+  </data>
+  <data name="T_Btn_RequireSystem" xml:space="preserve">
+    <value>System awake</value>
+  </data>
+  <data name="T_Title" xml:space="preserve">
+    <value>SleepPreventer</value>
+  </data>
 </root>
