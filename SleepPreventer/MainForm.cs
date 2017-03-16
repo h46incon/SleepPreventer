@@ -28,7 +28,7 @@ namespace SleepPreventer
                 uint opt = item.Key;
                 CheckBox cb = item.Value;
                 cb_opt_dic_[cb] = opt;
-                cb.Text = Public.opt_name_dic_[opt];
+                cb.Text = Public.OptNameDic[opt];
 				cb.Click += new System.EventHandler(this.OptionCBClick);
 			}
             this.Text = Public.LocalStrDic[Public.LocalStrID.TITLE];

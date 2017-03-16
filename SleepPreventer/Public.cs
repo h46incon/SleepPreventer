@@ -59,7 +59,7 @@ namespace SleepPreventer
             OPTION_NOT_SUPPORT
         }
 
-        public static readonly Dictionary<uint, string> opt_name_dic_;
+        public static readonly Dictionary<uint, string> OptNameDic;
         public static readonly Dictionary<LocalStrID, string> LocalStrDic;
 
         public static Guid GUID_SYSTEM_BUTTON_SUBGROUP = new Guid("4f971e89-eebd-4455-a8de-9e59040e7347");
@@ -75,11 +75,11 @@ namespace SleepPreventer
             LocalStrDic[LocalStrID.EXIT] = rm.GetString("T_Exit");
 
             // Load OptionName
-            opt_name_dic_ = new Dictionary<uint, string>();
-			opt_name_dic_[TExcState.AWAY_MODE] = rm.GetString("T_Btn_AwayMode");
-            opt_name_dic_[TExcState.SYS_REQ] = rm.GetString("T_Btn_RequireSystem");
-            opt_name_dic_[TExcState.DISPLAY_REQ] = rm.GetString("T_Btn_RequireDisplay");
-			opt_name_dic_[TExcState.AWAKE_IN_LID_CLODE] = rm.GetString("T_Btn_LidClosedAwake");
+            OptNameDic = new Dictionary<uint, string>();
+			OptNameDic[TExcState.AWAY_MODE] = rm.GetString("T_Btn_AwayMode");
+            OptNameDic[TExcState.SYS_REQ] = rm.GetString("T_Btn_RequireSystem");
+            OptNameDic[TExcState.DISPLAY_REQ] = rm.GetString("T_Btn_RequireDisplay");
+			OptNameDic[TExcState.AWAKE_IN_LID_CLODE] = rm.GetString("T_Btn_LidClosedAwake");
         }
     }
 

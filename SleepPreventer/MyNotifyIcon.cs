@@ -86,7 +86,7 @@ namespace SleepPreventer
         {
 			// New strip menu item
             opt_menuitem_dic_ = new Dictionary<uint, ToolStripMenuItem>();
-			foreach (var opt in Public.opt_name_dic_.Keys)
+			foreach (var opt in Public.OptNameDic.Keys)
 			{
 				opt_menuitem_dic_[opt] = new ToolStripMenuItem();
 			}
@@ -99,7 +99,7 @@ namespace SleepPreventer
                 uint opt = item.Key;
                 ToolStripMenuItem menu_item = item.Value;
                 menuitem_opt_dic_[menu_item] = opt;
-                menu_item.Text = Public.opt_name_dic_[opt];
+                menu_item.Text = Public.OptNameDic[opt];
                 menu_item.Click += new EventHandler(this.opt_menuitemClick);
 			}
             exit_item_.Text = Public.LocalStrDic[Public.LocalStrID.EXIT];
