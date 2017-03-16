@@ -52,8 +52,15 @@ namespace SleepPreventer
 		/// <summary>
 		///  Global const variable
 		/// </summary>
-        public static string kProgramName;
+        public enum LocalStrID
+        {
+            TITLE,
+            EXIT,
+            OPTION_NOT_SUPPORT
+        }
+
         public static readonly Dictionary<uint, string> opt_name_dic_;
+        public static readonly Dictionary<LocalStrID, string> LocalStrDic;
 
         public static Guid GUID_SYSTEM_BUTTON_SUBGROUP = new Guid("4f971e89-eebd-4455-a8de-9e59040e7347");
         public static Guid GUID_LIDCLOSE_ACTION = new Guid("5ca83367-6e45-459f-a27b-476b1d01c936");
@@ -62,8 +69,12 @@ namespace SleepPreventer
 		static Public()
         {
             ResourceManager rm = new ResourceManager(typeof(MainForm));
-            kProgramName = rm.GetString("T_Title");
+            // Load local string
+            LocalStrDic = new Dictionary<LocalStrID, string>();
+            LocalStrDic[LocalStrID.TITLE] = rm.GetString("T_Title");
+            LocalStrDic[LocalStrID.EXIT] = rm.GetString("T_Exit");
 
+            // Load OptionName
             opt_name_dic_ = new Dictionary<uint, string>();
 			opt_name_dic_[TExcState.AWAY_MODE] = rm.GetString("T_Btn_AwayMode");
             opt_name_dic_[TExcState.SYS_REQ] = rm.GetString("T_Btn_RequireSystem");

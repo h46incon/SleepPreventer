@@ -31,7 +31,7 @@ namespace SleepPreventer
                 cb.Text = Public.opt_name_dic_[opt];
 				cb.Click += new System.EventHandler(this.OptionCBClick);
 			}
-            this.Text = Public.kProgramName;
+            this.Text = Public.LocalStrDic[Public.LocalStrID.TITLE];
 			SetCheckBoxState();
 
             ts_setter_.AddValChangeCB(
@@ -45,7 +45,7 @@ namespace SleepPreventer
             CheckBox cb = (CheckBox)obj;
             uint value = cb_opt_dic_[cb];
             if ( ! ts_setter_.TrySetState(value, cb.Checked)) {
-                MessageBox.Show("系统不支持该选项");
+                MessageBox.Show(Public.LocalStrDic[Public.LocalStrID.OPTION_NOT_SUPPORT]);
             }
         }
 		

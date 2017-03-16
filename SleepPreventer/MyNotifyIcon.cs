@@ -18,7 +18,7 @@ namespace SleepPreventer
             InitMenuStrip();
 			// Notify_icon
 			notify_icon_ = new System.Windows.Forms.NotifyIcon();
-            notify_icon_.Text = Public.kProgramName;
+            notify_icon_.Text = Public.LocalStrDic[Public.LocalStrID.TITLE];
             notify_icon_.Visible = true;
 			notify_icon_.Click += new System.EventHandler(notifyIcon_Click);
             notify_icon_.ContextMenuStrip = notify_menu_;
@@ -78,7 +78,7 @@ namespace SleepPreventer
             item.Checked ^= true;
             uint value = menuitem_opt_dic_[item];
             if ( ! ts_setter_.TrySetState(value, item.Checked)) {
-                MessageBox.Show("系统不支持该选项");
+                MessageBox.Show(Public.LocalStrDic[Public.LocalStrID.OPTION_NOT_SUPPORT]);
             }
         }
 
@@ -102,7 +102,7 @@ namespace SleepPreventer
                 menu_item.Text = Public.opt_name_dic_[opt];
                 menu_item.Click += new EventHandler(this.opt_menuitemClick);
 			}
-            exit_item_.Text = "退出";
+            exit_item_.Text = Public.LocalStrDic[Public.LocalStrID.EXIT];
             exit_item_.Click += new EventHandler(this.exit_toolstripItemClick);
 			
 			// Notify Menu
