@@ -68,7 +68,7 @@ namespace SleepPreventer
 
 		static Public()
         {
-            ResourceManager rm = new ResourceManager(typeof(MainForm));
+            ResourceManager rm = new ResourceManager(typeof(LocalString));
             // Load local string
             LocalStrDic = new Dictionary<LocalStrID, string>();
             LocalStrDic[LocalStrID.TITLE] = rm.GetString("T_Title");

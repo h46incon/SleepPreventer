@@ -197,25 +197,4 @@
         AAP4AAAf/AAAP/4AAH//AAD//8AD///+f/8=
 </value>
   </data>
-  <data name="T_Btn_AwayMode" xml:space="preserve">
-    <value>离开模式</value>
-  </data>
-  <data name="T_Exit" xml:space="preserve">
-    <value>退出</value>
-  </data>
-  <data name="T_Btn_LidClosedAwake" xml:space="preserve">
-    <value>合上盖子时保持唤醒</value>
-  </data>
-  <data name="T_Btn_RequireDisplay" xml:space="preserve">
-    <value>保持显示器唤醒</value>
-  </data>
-  <data name="T_Btn_RequireSystem" xml:space="preserve">
-    <value>保持系统唤醒</value>
-  </data>
-  <data name="T_Title" xml:space="preserve">
-    <value>睡眠终结者</value>
-  </data>
-  <data name="T_OptionNotSupport" xml:space="preserve">
-    <value>系统不支持该选项</value>
-  </data>
 </root>
