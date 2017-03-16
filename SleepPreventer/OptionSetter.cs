@@ -445,8 +445,17 @@ namespace SleepPreventer
         private bool TrySetStateGroup(uint _state)
         {
             bool result = true;
-			// Check sys idle state
-			if (Public.ResetSysIdle(_state & ~AWAKE_IN_LID_CLODE))
+
+            uint idle_state = _state & ~AWAKE_IN_LID_CLODE;
+            // Handle SYS_REQ option
+            // The DISPLAY_REQ option always need SYS_REQ option
+            if ( (idle_state & DISPLAY_REQ) != 0)
+            {
+                idle_state |= SYS_REQ;
+            }
+
+            // Check sys idle state setter return
+			if (Public.ResetSysIdle(idle_state))
 			{
 				cur_state_ = SetBit(cur_state_, _state, 
                     AWAY_MODE | DISPLAY_REQ | SYS_REQ);
